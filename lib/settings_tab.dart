@@ -83,20 +83,22 @@ class _SettingsTabState extends State<SettingsTab> {
     );
   }
 
-  void showLanguageSheet(BuildContext context) {
-    showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: appcolor.primarycolor, width: 2)),
-      context: context,
-      builder: (context) => const LanguageBottomSheet(),
-    );
-  }
+void showLanguageSheet(BuildContext context) {
+  showCustomBottomSheet(context, const LanguageBottomSheet());
+}
 
-  void showThemeBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => const ThemeBottomSheet(),
-    );
-  }
+void showThemeBottomSheet(BuildContext context) {
+  showCustomBottomSheet(context, const ThemeBottomSheet());
+}
+
+void showCustomBottomSheet(BuildContext context, Widget child) {
+  showModalBottomSheet(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+      side: const BorderSide(color: appcolor.primarycolor, width: 2),
+    ),
+    context: context,
+    builder: (context) => child,
+  );
+}
 }

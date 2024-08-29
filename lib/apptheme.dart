@@ -11,11 +11,13 @@ class MyThemeData {
       elevation: 0,
     ),
     bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor:appcolor.whitecolor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        // side: const BorderSide(color: appcolor.primarycolor, width: 2), // Commented out for overflow testing
+        side: const BorderSide(color: appcolor.primarycolor, width: 2), 
       ),
     ),
+    
     textTheme: TextTheme(
       bodyLarge: GoogleFonts.poppins(
           fontSize: 22,

@@ -54,23 +54,23 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         return null;
                       },
                       style: TextStyle(
-                        color: Colors.black, // Set text color to black
-                        fontSize: 12, // Set font size to 12
+                        color: Colors.black, 
+                        fontSize: 12,
                       ),
-                      cursorColor: Colors.blue, // Set the cursor color to blue
+                      cursorColor: Colors.blue, 
                       decoration: InputDecoration(
                         labelText: "Enter Task Title",
                         filled: true,
-                        fillColor: Colors.transparent, // Making text field background transparent
+                        fillColor: Colors.transparent, 
                         labelStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), // Blue underline for text field
+                          borderSide: BorderSide(color: Colors.blue), 
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), // Blue underline when focused
+                          borderSide: BorderSide(color: Colors.blue),
                         ),
                       ),
                     ),
@@ -88,23 +88,23 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         return null;
                       },
                       style: TextStyle(
-                        color: Colors.black, // Set text color to black
-                        fontSize: 12, // Set font size to 12
+                        color: Colors.black,
+                        fontSize: 12,
                       ),
-                      cursorColor: Colors.blue, // Set the cursor color to blue
+                      cursorColor: Colors.blue,
                       decoration: InputDecoration(
                         labelText: "Enter Task Description",
                         filled: true,
-                        fillColor: Colors.transparent, // Making text field background transparent
+                        fillColor: Colors.transparent, 
                         labelStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), // Blue underline for text field
+                          borderSide: BorderSide(color: Colors.blue), 
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), // Blue underline when focused
+                          borderSide: BorderSide(color: Colors.blue), 
                         ),
                       ),
                       maxLines: 3,
@@ -119,7 +119,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                             AppLocalizations.of(context)!.select_date,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          SizedBox(height: 4), // Reduced space between label and date
+                          SizedBox(height: 4), 
                           InkWell(
                             onTap: showCalendar,
                             child: Container(

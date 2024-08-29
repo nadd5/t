@@ -22,12 +22,17 @@ dependencies:
   provider: ^6.1.2
   easy_date_timeline: ^1.0.3
   flutter_slidable: ^3.1.1
+  #google_sign_in: '^4.5.1'
+  #flutter_facebook_auth: '^3.5.0'
+  #twitter_login: ^4.0.1
+
 
 
  
   cupertino_icons: ^1.0.6
   firebase_core: ^2.24.2
   cloud_firestore: ^4.14.0
+  firebase_auth: ^4.16.0
 
 dev_dependencies:
   flutter_test:

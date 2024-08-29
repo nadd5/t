@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todoappp/appcolor.dart';
-import 'package:todoappp/language_bottom_sheet.dart';
-import 'package:todoappp/theme_bottom_sheet.dart';
+import 'package:todoappp/home/settings/language_bottom_sheet.dart';
+import 'package:todoappp/home/settings/theme_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsTab extends StatefulWidget {

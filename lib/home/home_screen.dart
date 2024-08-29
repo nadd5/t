@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:todoappp/add_task_bottom_sheet.dart';
+import 'package:todoappp/home/task_list/add_task_bottom_sheet.dart';
 import 'package:todoappp/appcolor.dart';
-import 'package:todoappp/settings_tab.dart';
-import 'package:todoappp/task_list.dart';
+import 'package:todoappp/home/settings/settings_tab.dart';
+import 'package:todoappp/home/task_list/task_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {

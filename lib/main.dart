@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoappp/home/auth/login/login_screen.dart';
+import 'package:todoappp/home/auth/register/register_screen.dart';
 import 'package:todoappp/providers/app_config_provider.dart';
 import 'package:todoappp/providers/list_provider.dart';
-import 'home_screen.dart';
+import 'home/home_screen.dart';
 import 'apptheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'firebase_options.dart';
@@ -38,6 +40,8 @@ class MyApp extends StatelessWidget {
       initialRoute: HomeScreen.routeName,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
+        RegisterScreen.routeName:(context)=>RegisterScreen(),
+        LoginScreen.routeName: (context)=>LoginScreen()
       },
       title: 'To-Do App',
       theme: MyThemeData.lightTheme,

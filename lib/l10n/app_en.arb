@@ -10,5 +10,9 @@
 "dark": "Dark",
 "select_date" :"Select Date",
 "add":" Add",
-"add_new_task" : "Add new Task" 
+"add_new_task" : "Add new Task", 
+ "edit_task": "Edit Task",
+  "is_done": "Done",
+  "save": "Save",
+  "cancel": "Cancel"
 }

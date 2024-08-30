@@ -6,46 +6,55 @@ class ListProvider extends ChangeNotifier {
   List<Task> tasksList = [];
   var selectedDate = DateTime.now();
 
-  ListProvider() {
-    getAllTasksFromFireStore();
+  void getAllTasksFromFireStore() async {
+    var querySnapshot = await FirebaseUtils.getTasksCollection().get();
+    tasksList = querySnapshot.docs.map((doc) {
+      return doc.data(); // Corrected method to access data
+    }).toList();
+    notifyListeners();
   }
+}
+
+
+/*import 'package:flutter/material.dart';
+import 'package:todoappp/firebase_utils.dart';
+import 'package:todoappp/model/task.dart';
+
+class ListProvider extends ChangeNotifier {
+  List<Task> tasksList = [];
+  var selectDate = DateTime.now();
+  
 
   void getAllTasksFromFireStore() async {
     var querySnapshot = await FirebaseUtils.getTasksCollection().get();
-    List<Task> fetchedTasksList = querySnapshot.docs.map((doc) {
+    tasksList = querySnapshot.docs.map((doc) {
+    notifyListeners();
       return doc.data();
     }).toList();
+    notifyListeners();
+    /*tasksList = tasksList.where((task) {
+      if (selectDate.day == task.dateTime.day &&
+          selectDate.month == task.dateTime.month &&
+          selectDate.year == task.dateTime.year) {
+        return true;
+      }
+      notifyListeners();
+      return false;
+    }).toList();*/
 
-    tasksList = fetchedTasksList.where((task) {
-      return selectedDate.day == task.dateTime.day &&
-          selectedDate.month == task.dateTime.month &&
-          selectedDate.year == task.dateTime.year;
-    }).toList();
-
-    tasksList.sort((Task task1, Task task2) {
+    tasksList.sort((Task task1, Task task2){
       return task1.dateTime.compareTo(task2.dateTime);
+      
     });
 
-    notifyListeners(); 
+    notifyListeners();
   }
 
-  void changeSelectedDate(DateTime newDate) {
-    selectedDate = newDate;
+  void changeSelectDate(DateTime newDate) {
+    selectDate = newDate;
     getAllTasksFromFireStore();
+    //notifyListeners();
+    notifyListeners();
   }
-
-  void addTask(Task task) async {
-    await FirebaseUtils.addTaskToFirebase(task);
-    getAllTasksFromFireStore();
-  }
-
-  void updateTask(Task task) async {
-    await FirebaseUtils.updateTaskInFirebase(task);
-    getAllTasksFromFireStore();
-  }
-
-  void deleteTask(Task task) async {
-    await FirebaseUtils.deleteTaskFromFireStore(task);
-    getAllTasksFromFireStore();
-  }
-}
+  
+}*/

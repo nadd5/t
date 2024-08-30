@@ -2,8 +2,6 @@ import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoappp/appcolor.dart';
-import 'package:todoappp/firebase_utils.dart';
-import 'package:todoappp/model/task.dart';
 import 'package:todoappp/providers/list_provider.dart';
 import 'package:todoappp/home/task_list/task_list_item.dart';
 
@@ -13,6 +11,7 @@ class TaskListTab extends StatefulWidget {
 }
 
 class _TaskListTabState extends State<TaskListTab> {
+
   @override
   void initState() {
     super.initState();
@@ -23,13 +22,13 @@ class _TaskListTabState extends State<TaskListTab> {
   @override
   Widget build(BuildContext context) {
     var listProvider = Provider.of<ListProvider>(context);
-
+    
     return Column(
       children: [
         EasyDateTimeLine(
-          initialDate: listProvider.selectedDate,
+          initialDate: DateTime.now(),
           onDateChange: (selectedDate) {
-            listProvider.changeSelectedDate(selectedDate);
+            //listProvider.changeSelectDate(selectedDate);
           },
           headerProps: const EasyHeaderProps(
             monthPickerType: MonthPickerType.switcher,
@@ -54,33 +53,15 @@ class _TaskListTabState extends State<TaskListTab> {
         ),
         SizedBox(height: 1),
         Expanded(
-          child: StreamBuilder(
-            stream: FirebaseUtils.getTasksCollection()
-                .where('dateTime', isGreaterThanOrEqualTo: listProvider.selectedDate)
-                .where('dateTime', isLessThan: listProvider.selectedDate.add(Duration(days: 1)))
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(child: Text('Error loading tasks'));
-              }
-              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(child: Text('No Tasks Added'));
-              }
-
-              var tasks = snapshot.data!.docs.map((doc) => doc.data() as Task).toList();
-
-              return ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  var task = tasks[index];
-                  return TaskListItem(task: task);
-                },
-              );
-            },
-          ),
+          child: listProvider.tasksList.isEmpty
+              ? Center(child: Text('No Tasks Added'))
+              : ListView.builder(
+                  itemCount: listProvider.tasksList.length,
+                  itemBuilder: (context, index) {
+                    var task = listProvider.tasksList[index];
+                    return TaskListItem(task: task);
+                  },
+                ),
         ),
       ],
     );

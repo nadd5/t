@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Task {
   static const String collectionName = 'tasks';
 
@@ -16,12 +18,22 @@ class Task {
   });
 
   factory Task.fromFireStore(Map<String, dynamic> data) {
+    final id = data['id'] ?? '';
+    final title = data['title'] ?? '';
+    final description = data['description'] ?? '';
+    final isDone = data['isDone'] ?? false;
+
+    // Ensure dateTime field is correctly handled
+    final dateTime = data['dateTime'] is Timestamp
+        ? (data['dateTime'] as Timestamp).toDate()
+        : DateTime.now();
+
     return Task(
-      id: data['id'] as String,
-      title: data['title'] as String,
-      description: data['description'] as String,
-      dateTime: DateTime.fromMillisecondsSinceEpoch(data['dateTime'] as int),
-      isDone: data['isDone'] as bool,
+      id: id,
+      title: title,
+      description: description,
+      dateTime: dateTime,
+      isDone: isDone,
     );
   }
 
@@ -30,7 +42,7 @@ class Task {
       'id': id,
       'title': title,
       'description': description,
-      'dateTime': dateTime.millisecondsSinceEpoch,
+      'dateTime': Timestamp.fromDate(dateTime),
       'isDone': isDone,
     };
   }

@@ -23,7 +23,7 @@ class _TaskListTabState extends State<TaskListTab> {
   @override
   Widget build(BuildContext context) {
     var listProvider = Provider.of<ListProvider>(context);
-    
+
     return Column(
       children: [
         EasyDateTimeLine(
@@ -53,39 +53,35 @@ class _TaskListTabState extends State<TaskListTab> {
           ),
         ),
         SizedBox(height: 1),
-        
         Expanded(
           child: StreamBuilder(
-  stream: FirebaseUtils.getTasksCollection()
-      .where('dateTime', isGreaterThanOrEqualTo: listProvider.selectedDate)
-      .where('dateTime', isLessThanOrEqualTo: listProvider.selectedDate.add(Duration(days: 1)))
-      .snapshots(),
-  builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return Center(child: CircularProgressIndicator());
-    }
-    if (snapshot.hasError) {
-      return Center(child: Text('Error loading tasks'));
-    }
-    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-      return Center(child: Text('No Tasks Added'));
-    }
+            stream: FirebaseUtils.getTasksCollection()
+                .where('dateTime', isGreaterThanOrEqualTo: listProvider.selectedDate)
+                .where('dateTime', isLessThan: listProvider.selectedDate.add(Duration(days: 1)))
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error loading tasks'));
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(child: Text('No Tasks Added'));
+              }
 
-    var tasks = snapshot.data!.docs.map((doc) => doc.data() as Task).toList();
+              var tasks = snapshot.data!.docs.map((doc) => doc.data() as Task).toList();
 
-    return ListView.builder(
-      itemCount: tasks.length,
-      itemBuilder: (context, index) {
-        var task = tasks[index];
-        return TaskListItem(task: task);
-      },
-    );
-    
-  },
-  
-)
+              return ListView.builder(
+                itemCount: tasks.length,
+                itemBuilder: (context, index) {
+                  var task = tasks[index];
+                  return TaskListItem(task: task);
+                },
+              );
+            },
+          ),
         ),
-        
       ],
     );
   }

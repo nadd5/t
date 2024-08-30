@@ -62,44 +62,31 @@ class TaskListItem extends StatelessWidget {
                                   : appcolor.primarycolor,
                               decoration: task.isDone
                                   ? TextDecoration.lineThrough
-                                  : null,
+                                  : TextDecoration.none,
+                              fontWeight: FontWeight.w600,
                             ),
                       ),
+                      SizedBox(height: 10),
                       Text(
                         task.description,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: task.isDone
                                   ? Colors.green
                                   : appcolor.primarycolor,
                               decoration: task.isDone
                                   ? TextDecoration.lineThrough
-                                  : null,
+                                  : TextDecoration.none,
                             ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: task.isDone
-                        ? Colors.transparent
-                        : appcolor.primarycolor,
-                  ),
-                  child: task.isDone
-                      ? Text(
-                          "is done",
-                          style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.bold),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            _markTaskAsDone(task, listProvider);
-                          },
-                          icon: Icon(Icons.check, size: 35),
-                          color: appcolor.whitecolor,
-                        ),
+                Checkbox(
+                  value: task.isDone,
+                  onChanged: (bool? value) {
+                    task.isDone = value ?? false;
+                    listProvider.updateTask(task);
+                  },
                 ),
               ],
             ),
@@ -109,111 +96,51 @@ class TaskListItem extends StatelessWidget {
     );
   }
 
-  void _showEditTaskDialog(
-      BuildContext context, Task task, ListProvider listProvider) {
+  void _showEditTaskDialog(BuildContext context, Task task, ListProvider listProvider) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        String updatedTitle = task.title;
-        String updatedDescription = task.description;
+      builder: (context) {
+        final titleController = TextEditingController(text: task.title);
+        final descriptionController = TextEditingController(text: task.description);
 
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: appcolor.whitecolor,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Text(
-                    "Edit Task",
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  onChanged: (value) {
-                    updatedTitle = value;
-                  },
-                  controller: TextEditingController(text: task.title),
-                  style: TextStyle(color: Colors.black, fontSize: 12),
-                  cursorColor: Colors.blue,
-                  decoration: InputDecoration(
-                    labelText: "Enter Task Title",
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16),
-                TextField(
-                  onChanged: (value) {
-                    updatedDescription = value;
-                  },
-                  controller: TextEditingController(text: task.description),
-                  style: TextStyle(color: Colors.black, fontSize: 12),
-                  cursorColor: Colors.blue,
-                  decoration: InputDecoration(
-                    labelText: "Enter Task Description",
-                    filled: true,
-                    fillColor: Colors.transparent,
-                    labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
-                    ),
-                  ),
-                  maxLines: 3,
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(color: appcolor.primarycolor),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    TextButton(
-                      onPressed: () {
-                        task.title = updatedTitle;
-                        task.description = updatedDescription;
-                        listProvider.updateTask(task);
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "Save",
-                        style: TextStyle(color: appcolor.primarycolor),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        return AlertDialog(
+          title: Text('Edit Task'),
+          content: Column(
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
+              ),
+              TextField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+            ],
           ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                task.title = titleController.text;
+                task.description = descriptionController.text;
+                listProvider.updateTask(task);
+                Navigator.of(context).pop();
+              },
+              child: Text('Save'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
         );
       },
     );
   }
-
+}
   void _markTaskAsDone(Task task, ListProvider listProvider) {
     task.isDone = true;
     listProvider.updateTask(task);
   }
-}
+

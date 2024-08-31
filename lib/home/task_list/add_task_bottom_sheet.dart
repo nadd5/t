@@ -5,6 +5,7 @@ import 'package:todoappp/appcolor.dart';
 import 'package:todoappp/firebase_utils.dart';
 import 'package:todoappp/model/task.dart';
 import 'package:todoappp/providers/list_provider.dart';
+import 'package:todoappp/providers/user_provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
   @override
@@ -20,12 +21,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: appcolor.whitecolor, 
-        borderRadius: BorderRadius.circular(20)
-      ),
+          color: appcolor.whitecolor, borderRadius: BorderRadius.circular(20)),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -42,7 +42,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
                     child: TextFormField(
                       onChanged: (text) {
                         title = text;
@@ -53,21 +54,21 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         }
                         return null;
                       },
-                      style: TextStyle(
-                        color: Colors.black, 
+                      style: const TextStyle(
+                        color: Colors.black,
                         fontSize: 12,
                       ),
-                      cursorColor: Colors.blue, 
-                      decoration: InputDecoration(
+                      cursorColor: Colors.blue,
+                      decoration: const InputDecoration(
                         labelText: "Enter Task Title",
                         filled: true,
-                        fillColor: Colors.transparent, 
+                        fillColor: Colors.transparent,
                         labelStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), 
+                          borderSide: BorderSide(color: Colors.blue),
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.blue),
@@ -76,7 +77,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
                     child: TextFormField(
                       onChanged: (text) {
                         description = text;
@@ -87,24 +89,24 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         }
                         return null;
                       },
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
                       ),
                       cursorColor: Colors.blue,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Enter Task Description",
                         filled: true,
-                        fillColor: Colors.transparent, 
+                        fillColor: Colors.transparent,
                         labelStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), 
+                          borderSide: BorderSide(color: Colors.blue),
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue), 
+                          borderSide: BorderSide(color: Colors.blue),
                         ),
                       ),
                       maxLines: 3,
@@ -119,7 +121,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                             AppLocalizations.of(context)!.select_date,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                          SizedBox(height: 4), 
+                          const SizedBox(height: 4),
                           InkWell(
                             onTap: showCalendar,
                             child: Container(
@@ -164,10 +166,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void addTask() {
+     var listProvider = Provider.of<ListProvider>(context);
     if (formKey.currentState?.validate() == true) {
-      setState(() {
+      var userProvider = Provider.of<UserProvider>(context);
+      /*setState(() {
         isAdding = true;
-      });
+      });*/
 
       Task task = Task(
         dateTime: selectDate,
@@ -175,14 +179,27 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         description: description,
       );
 
-      FirebaseUtils.addTaskToFirebase(task).then((value) {
+      FirebaseUtils.addTaskToFirebase(task,userProvider.currentUser!.id).then((value){
+
+        print("task added successfully");
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+        Navigator.pop(context);
+      }).
+      timeout(Duration(seconds:1),
+      onTimeout:(){
+        print("task added successfully");
+        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+        Navigator.pop(context);
+      });
+
+      /*(value) {
         Provider.of<ListProvider>(context, listen: false)
             .getAllTasksFromFireStore();
         setState(() {
           isAdding = false;
         });
         Navigator.pop(context);
-      });
+      });*/
     }
   }
 
@@ -191,7 +208,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 365)),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: Theme.of(context).copyWith(

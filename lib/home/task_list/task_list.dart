@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todoappp/appcolor.dart';
 import 'package:todoappp/providers/list_provider.dart';
 import 'package:todoappp/home/task_list/task_list_item.dart';
+import 'package:todoappp/providers/user_provider.dart';
 
 class TaskListTab extends StatefulWidget {
   @override
@@ -11,24 +12,21 @@ class TaskListTab extends StatefulWidget {
 }
 
 class _TaskListTabState extends State<TaskListTab> {
-
-  @override
-  void initState() {
-    super.initState();
-    var listProvider = Provider.of<ListProvider>(context, listen: false);
-    listProvider.getAllTasksFromFireStore();
-  }
-
   @override
   Widget build(BuildContext context) {
     var listProvider = Provider.of<ListProvider>(context);
-    
+    var userProvider = Provider.of<UserProvider>(context);
+    if (listProvider.tasksList.isEmpty) {
+      listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+    }
+
     return Column(
       children: [
         EasyDateTimeLine(
           initialDate: DateTime.now(),
           onDateChange: (selectedDate) {
-            //listProvider.changeSelectDate(selectedDate);
+            listProvider.changeSelectDate(selectedDate,userProvider.currentUser!.id);
+            // Handle date change
           },
           headerProps: const EasyHeaderProps(
             monthPickerType: MonthPickerType.switcher,
@@ -54,16 +52,93 @@ class _TaskListTabState extends State<TaskListTab> {
         SizedBox(height: 1),
         Expanded(
           child: listProvider.tasksList.isEmpty
-              ? Center(child: Text('No Tasks Added'))
+              ? Center(child: Text('No Added Tasks'))
               : ListView.builder(
-                  itemCount: listProvider.tasksList.length,
                   itemBuilder: (context, index) {
-                    var task = listProvider.tasksList[index];
-                    return TaskListItem(task: task);
+                    return TaskListItem(
+                      task: listProvider.tasksList[index],
+                    );
                   },
+                  itemCount: listProvider.tasksList.length,
                 ),
         ),
       ],
     );
   }
 }
+ /* void getAllTasksFromFireStore() async {
+    var querySnapshot = await FirebaseUtils.getTasksCollection().get();
+    tasksList = querySnapshot.docs.map((doc) {
+      return doc.data();
+    }).toList();
+  }*/
+
+
+/*import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoappp/appcolor.dart';
+import 'package:todoappp/providers/list_provider.dart';
+import 'package:todoappp/home/task_list/task_list_item.dart';
+
+class TaskListTab extends StatefulWidget {
+  @override
+  State<TaskListTab> createState() => _TaskListTabState();
+}
+
+class _TaskListTabState extends State<TaskListTab> {
+  @override
+  Widget build(BuildContext context) {
+    var listProvider = Provider.of<ListProvider>(context);
+    if (listProvider.tasksList.isEmpty) {
+      listProvider.getAllTasksFromFireStore();
+    }
+
+    return Column(
+      children: [
+        EasyDateTimeLine(
+          initialDate: DateTime.now(),
+          onDateChange: (selectedDate) {
+            listProvider.changeSelectDate(selectedDate);
+          },
+          headerProps: const EasyHeaderProps(
+            monthPickerType: MonthPickerType.switcher,
+            dateFormatter: DateFormatter.fullDateDMY(),
+          ),
+          dayProps: const EasyDayProps(
+            dayStructure: DayStructure.dayStrDayNum,
+            activeDayStyle: DayStyle(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    appcolor.primarycolor,
+                    Color.fromARGB(255, 145, 190, 220),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 1),
+        Expanded(
+          child: listProvider.tasksList.isEmpty
+              ? Center(
+                  child: Text(
+                      'No Added Tasks')) 
+              : ListView.builder(
+                  itemBuilder: (context, index) {
+                    return TaskListItem(
+                      task: listProvider.tasksList[index],
+                    );
+                  },
+                  itemCount: listProvider.tasksList.length,
+                ),
+        ),
+      ],
+    );
+  }
+}*/
+/**/

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todoappp/dialog_utils.dart';
+import 'package:todoappp/firebase_utils.dart';
 import 'package:todoappp/home/auth/custom_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:todoappp/home/home_screen.dart';
+import 'package:todoappp/model/my_user.dart';
+import 'package:todoappp/providers/user_provider.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -14,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Create Account'),
+          title: const Text('Create Account'),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -89,7 +95,7 @@ class RegisterScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(15),
                           child: ElevatedButton(
                               onPressed: () {
-                                register();
+                                register(context);
                               },
                               child: Text(
                                 'Create Account',
@@ -102,34 +108,62 @@ class RegisterScreen extends StatelessWidget {
         ));
   }
 
-  void register() async {
-
-
+  void register(BuildContext context) async {
     if (formKey.currentState?.validate() == true) {
+      DialogUtils.showLoading(
+          context: (context),
+          loadingLabel: 'loading...',
+          barrierDismissible: false);
+
       try {
         final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passController.text,
         );
+        MyUser myUser = MyUser(
+            id: credential.user?.uid ?? '',
+            name: nameController.text,
+            email: emailController.text);
+        print('before DB');
 
-
-        print('registered successfully');
+        await FirebaseUtils.addUserToFireStore(myUser);
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(myUser);
+        print('after DB');
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+            context: context,
+            contents: 'Register Successfully',
+            title: "Success",
+            posActionName: "ok",
+            posAction: () {
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+            });
         print(credential.user?.uid ?? "");
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-
-
-          print('The password provided is too weak.');
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+              context: context,
+              contents: 'The password provided is too weak',
+              title: 'Error',
+              posActionName: "ok");
         } else if (e.code == 'email-already-in-use') {
-
-
-          print('The account already exists for that email.');
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+              context: context,
+              contents: 'an account already exists for that email',
+              title: 'Error',
+              posActionName: "ok");
         }
       } catch (e) {
-
-        
-        print(e);
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+            context: context,
+            contents: e.toString(),
+            title: 'Error',
+            posActionName: "ok");
       }
     }
   }

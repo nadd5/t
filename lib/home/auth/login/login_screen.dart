@@ -1,8 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todoappp/appcolor.dart';
+import 'package:todoappp/dialog_utils.dart';
+import 'package:todoappp/firebase_utils.dart';
 import 'package:todoappp/home/auth/custom_text_form_field.dart';
 import 'package:todoappp/home/auth/register/register_screen.dart';
+import 'package:todoappp/home/home_screen.dart';
+//import 'package:todoappp/model/my_user.dart';
+import 'package:todoappp/providers/user_provider.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
@@ -10,11 +16,13 @@ class LoginScreen extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  late UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
+    //userProvider = Provider.of(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login'),
+          title: const Text('Login'),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -68,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(15),
                           child: ElevatedButton(
                               onPressed: () {
-                                login();
+                                login(context);
                               },
                               child: Text(
                                 'Login',
@@ -95,24 +103,54 @@ class LoginScreen extends StatelessWidget {
         ));
   }
 
-  void login() async {
+  void login(BuildContext context) async {
     if (formKey.currentState?.validate() == true) {
       try {
+        DialogUtils.showLoading(
+            context: context,
+            loadingLabel: 'Waiting...',
+            barrierDismissible: false);
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-                email: emailController.text, password: passController.text);
-                print('successfully Logged in');
+                email: emailController.text,
+                password: passController.text);
+
+        var user = await FirebaseUtils.readUserFromFireStore(
+            credential.user?.uid ?? '');
+        if (user == null) {
+          return;
+        }
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(user);
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+            context: context,
+            contents: "Login Successfully",
+            title: 'Success',
+            posActionName: "ok",
+            posAction: () {
+              Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+            });
         print(credential.user?.uid ?? "");
-      } 
-      on FirebaseAuthException catch (e) {
+      } on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-credential') {
-          print('Supplied auth credential is incorrect,malformed or has expired');
+          DialogUtils.hideLoading(context);
+          DialogUtils.showMessage(
+              context: context,
+              contents:
+                  "Supplied auth credential is incorrect,malformed or has expired",
+              title: 'Error',
+              posActionName: "ok");
         } /*else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
         }*/
-      } 
-      catch (e) {
-        print(e.toString());
+      } catch (e) {
+        DialogUtils.hideLoading(context);
+        DialogUtils.showMessage(
+            context: context,
+            contents: e.toString(),
+            title: 'Error',
+            posActionName: "ok");
       }
     }
   }

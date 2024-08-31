@@ -5,21 +5,20 @@ import 'package:todoappp/appcolor.dart';
 import 'package:todoappp/firebase_utils.dart';
 import 'package:todoappp/model/task.dart';
 import 'package:todoappp/providers/list_provider.dart';
-
+import 'package:todoappp/providers/user_provider.dart';
 
 class TaskListItem extends StatelessWidget {
   final Task task;
 
-  TaskListItem({required this.task});
+  const TaskListItem({required this.task});
 
   @override
   Widget build(BuildContext context) {
     var listProvider = Provider.of<ListProvider>(context);
-    
+
     return Container(
-      margin: EdgeInsets.all(12),
-      child: 
-      Slidable(
+      margin: const EdgeInsets.all(12),
+      child: Slidable(
         startActionPane: ActionPane(
           extentRatio: 0.25,
           motion: const DrawerMotion(),
@@ -27,7 +26,16 @@ class TaskListItem extends StatelessWidget {
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
-
+                var userProvider = Provider.of<UserProvider>(context,listen:false);
+                FirebaseUtils.deleteTaskFromFireStore(
+                  task,userProvider.currentUser!.id
+                ).then((value){
+                  print('Task is succesfully deleted');
+                  listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+                }).timeout(Duration(seconds: 1), onTimeout: () {
+                  print('Task is succesfully deleted');
+                  listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+                });
               },
               backgroundColor: appcolor.redcolor,
               foregroundColor: appcolor.whitecolor,
@@ -37,9 +45,7 @@ class TaskListItem extends StatelessWidget {
           ],
         ),
 
-      
-      
-      /*Slidable(
+        /*Slidable(
         startActionPane: ActionPane(
           extentRatio: 0.25,
           motion: const DrawerMotion(),
@@ -62,7 +68,7 @@ class TaskListItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () => _showEditTaskDialog(context, task, listProvider),
           child: Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: appcolor.whitecolor,
               borderRadius: BorderRadius.circular(25),
@@ -71,7 +77,7 @@ class TaskListItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  margin: EdgeInsets.all(15),
+                  margin: const EdgeInsets.all(15),
                   height: MediaQuery.of(context).size.height * 0.1,
                   width: 4,
                   color: appcolor.primarycolor,
@@ -82,43 +88,48 @@ class TaskListItem extends StatelessWidget {
                     children: [
                       Text(
                         task.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                              color: task.isDone ? Colors.green : appcolor.primarycolor,
-                              decoration: task.isDone ? TextDecoration.lineThrough : null,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: task.isDone
+                                  ? Colors.green
+                                  : appcolor.primarycolor,
+                              decoration: task.isDone
+                                  ? TextDecoration.lineThrough
+                                  : null,
                             ),
                       ),
                       Text(
                         task.description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(
-                              color: task.isDone ? Colors.green : appcolor.primarycolor,
-                              decoration: task.isDone ? TextDecoration.lineThrough : null,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: task.isDone
+                                  ? Colors.green
+                                  : appcolor.primarycolor,
+                              decoration: task.isDone
+                                  ? TextDecoration.lineThrough
+                                  : null,
                             ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: task.isDone ? Colors.transparent : appcolor.primarycolor,
+                    color: task.isDone
+                        ? Colors.transparent
+                        : appcolor.primarycolor,
                   ),
                   child: task.isDone
-                      ? Text(
+                      ? const Text(
                           "is done",
-                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: Colors.green, fontWeight: FontWeight.bold),
                         )
                       : IconButton(
                           onPressed: () {
-                            _markTaskAsDone(task, listProvider);
+                           // _markTaskAsDone(task, listProvider);
                           },
-                          icon: Icon(Icons.check, size: 35),
+                          icon: const Icon(Icons.check, size: 35),
                           color: appcolor.whitecolor,
                         ),
                 ),
@@ -130,112 +141,213 @@ class TaskListItem extends StatelessWidget {
     );
   }
 
-void _showEditTaskDialog(BuildContext context, Task task, ListProvider listProvider) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      String updatedTitle = task.title;
-      String updatedDescription = task.description;
+  void _showEditTaskDialog(
+      BuildContext context, Task task, ListProvider listProvider) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String updatedTitle = task.title;
+        String updatedDescription = task.description;
 
-      return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: appcolor.whitecolor,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: appcolor.whitecolor,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Text(
+                    "Edit Task",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  onChanged: (value) {
+                    updatedTitle = value;
+                  },
+                  controller: TextEditingController(text: task.title),
+                  style: const TextStyle(color: Colors.black, fontSize: 12),
+                  cursorColor: Colors.blue,
+                  decoration: const InputDecoration(
+                    labelText: "Enter Task Title",
+                    filled: true,
+                    fillColor: Colors.transparent,
+                    labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  onChanged: (value) {
+                    updatedDescription = value;
+                  },
+                  controller: TextEditingController(text: task.description),
+                  style: const TextStyle(color: Colors.black, fontSize: 12),
+                  cursorColor: Colors.blue,
+                  decoration: const InputDecoration(
+                    labelText: "Enter Task Description",
+                    filled: true,
+                    fillColor: Colors.transparent,
+                    labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue),
+                    ),
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: appcolor.primarycolor),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        //var userProvider = Provider.of<UserProvider>(context,listen:false);
+                        task.title = updatedTitle;
+                        task.description = updatedDescription;
+                        //FirebaseUtils.updateTaskInFirebase(task,UserProvider.currentUser!.id);
+                        //listProvider.getAllTasksFromFireStore(UserProvider.currentUser!.id);
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(color: appcolor.primarycolor),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+     
+  }
+/*void _markTaskAsDone(Task task, ListProvider listProvider) {
+    task.isDone = true;
+    FirebaseUtils.updateTaskInFirebase(task,UserProvider.currentUser!.id);
+    listProvider.getAllTasksFromFireStore(UserProvider.currentUser!.id);
+  }*/
+ 
+}
+
+/*import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:todoappp/appcolor.dart';
+import 'package:todoappp/firebase_utils.dart';
+import 'package:todoappp/model/task.dart';
+import 'package:todoappp/providers/list_provider.dart';
+
+// ignore: must_be_immutable
+class TaskListItem extends StatelessWidget {
+  Task task;
+
+  TaskListItem({required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    var listProvider = Provider.of<ListProvider>(context);
+    return Container(
+      margin: EdgeInsets.all(12),
+      child: Slidable(
+        startActionPane: ActionPane(
+          extentRatio: 0.25,
+          motion: const DrawerMotion(),
+          children: [
+            SlidableAction(
+              borderRadius: BorderRadius.circular(15),
+              onPressed: (context) {
+                FirebaseUtils.addTaskToFirebase(task)
+                    .timeout(Duration(seconds: 1), onTimeout: () {
+                  print('Task is succesfully deleted');
+                  listProvider.getAllTasksFromFireStore();
+                });
+              },
+              backgroundColor: appcolor.redcolor,
+              foregroundColor: appcolor.whitecolor,
+              icon: Icons.delete,
+              label: 'Delete',
+            ),
+          ],
+        ),
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: appcolor.whitecolor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Center(
-                child: Text(
-                  "Edit Task",
-                  style: Theme.of(context).textTheme.bodyMedium,
+              Container(
+                margin: EdgeInsets.all(15),
+                height: MediaQuery.of(context).size.height * 0.1,
+                width: 4,
+                color: appcolor.primarycolor,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(task.title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: appcolor.primarycolor)),
+                    Text(task.description,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: appcolor.primarycolor)),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              TextField(
-                onChanged: (value) {
-                  updatedTitle = value;
-                },
-                controller: TextEditingController(text: task.title),
-                style: TextStyle(color: Colors.black, fontSize: 12),
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  labelText: "Enter Task Title",
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: appcolor.primarycolor,
                 ),
-              ),
-              SizedBox(height: 16),
-              TextField(
-                onChanged: (value) {
-                  updatedDescription = value;
-                },
-                controller: TextEditingController(text: task.description),
-                style: TextStyle(color: Colors.black, fontSize: 12),
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  labelText: "Enter Task Description",
-                  filled: true,
-                  fillColor: Colors.transparent,
-                  labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue),
-                  ),
+                child: IconButton(
+                  onPressed: () {
+
+                    
+                  },
+                  icon: Icon(Icons.check, size: 35),
+                  color: appcolor.whitecolor,
                 ),
-                maxLines: 3,
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: appcolor.primarycolor),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  TextButton(
-                    onPressed: () {
-                      task.title = updatedTitle;
-                      task.description = updatedDescription;
-                      FirebaseUtils.updateTaskInFirebase(task);
-                      listProvider.getAllTasksFromFireStore();
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "Save",
-                      style: TextStyle(color: appcolor.primarycolor),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
         ),
-      );
-    },
-  );
-}
-
-
-  void _markTaskAsDone(Task task, ListProvider listProvider) {
-    task.isDone = true;
-    FirebaseUtils.updateTaskInFirebase(task);
-    listProvider.getAllTasksFromFireStore();
+      ),
+    );
   }
-}
+}*/
+
+/*
+*/

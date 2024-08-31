@@ -1,9 +1,6 @@
 name: todoappp
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-
 version: 1.0.0+1
 
 environment:
@@ -18,7 +15,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  google_fonts: ^5.1.0
+  google_fonts: ^6.2.1
   provider: ^6.1.2
   easy_date_timeline: ^1.0.3
   flutter_slidable: ^3.1.1

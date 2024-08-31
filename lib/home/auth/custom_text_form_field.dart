@@ -26,19 +26,19 @@ class CustomTextFormField extends StatelessWidget {
           labelText: label,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: appcolor.primarycolor),
+            borderSide: const BorderSide(color: appcolor.primarycolor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: appcolor.primarycolor),
+            borderSide: const BorderSide(color: appcolor.primarycolor),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: appcolor.redcolor),
+            borderSide: const BorderSide(color: appcolor.redcolor),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: BorderSide(color: appcolor.redcolor),
+            borderSide: const BorderSide(color: appcolor.redcolor),
           ),
           errorMaxLines: 2,
         ),

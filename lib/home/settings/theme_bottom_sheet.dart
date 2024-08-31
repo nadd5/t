@@ -60,7 +60,7 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
               .bodyMedium
               ?.copyWith(color: appcolor.primarycolor),
         ),
-        Icon(Icons.check, size: 30, color: appcolor.primarycolor)
+        const Icon(Icons.check, size: 30, color: appcolor.primarycolor)
       ],
     );
   }

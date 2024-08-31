@@ -5,7 +5,7 @@ import 'package:todoappp/providers/app_config_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageBottomSheet extends StatefulWidget {
-  const LanguageBottomSheet({Key? key}) : super(key: key);
+  const LanguageBottomSheet({super.key});
   @override
   State<LanguageBottomSheet> createState() => _LanguageBottomSheetState();
 }
@@ -60,7 +60,7 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
               .bodyMedium
               ?.copyWith(color: appcolor.primarycolor),
         ),
-        Icon(Icons.check, size: 30, color: appcolor.primarycolor)
+        const Icon(Icons.check, size: 30, color: appcolor.primarycolor)
       ],
     );
   }

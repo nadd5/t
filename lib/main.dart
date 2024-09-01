@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,27 +12,28 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Platform.isAndroid
-      ? await Firebase.initializeApp(
-          options: const FirebaseOptions(
-              apiKey: "AIzaSyASClUGg1MWFSVdVlDltEp9pF6pCBQOJ3E",
-              appId: "com.example.app",
-              messagingSenderId: "530814202175",
-              projectId: "todoappp-affe3"))
-      : await Firebase.initializeApp();
+
+  await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyASClUGg1MWFSVdVlDltEp9pF6pCBQOJ3E",
+          appId: "com.example.app",
+          messagingSenderId: "530814202175",
+          projectId: "todoappp-affe3"));
+  //await Firebase.initializeApp();
 
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (context) => ListProvider(),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => AppConfigProvider(),
-      ),
-      ChangeNotifierProvider(create: (context)=>UserProvider()),
-    ], 
-    
-    child: MyApp(),),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ListProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AppConfigProvider(),
+        ),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+      ],
+      child: MyApp(),
+    ),
   );
 }
 

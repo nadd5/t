@@ -165,9 +165,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void addTask() {
-    var listProvider = Provider.of<ListProvider>(context);
+    var listProvider = Provider.of<ListProvider>(context,listen:false);
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+
     if (formKey.currentState?.validate() == true) {
-      var userProvider = Provider.of<UserProvider>(context);
       setState(() {
         isAdding = true;
       });
@@ -190,10 +191,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       });
 
       (value) {
-        Provider.of<ListProvider>(context, listen: false)
+        Provider.of<ListProvider>(context, listen: true)
             .getAllTasksFromFireStore(userProvider.currentUser!.id);
         setState(() {
-          isAdding = false;
+          isAdding = true;
         });
         Navigator.pop(context);
       };

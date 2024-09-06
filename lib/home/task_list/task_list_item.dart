@@ -26,7 +26,7 @@ class TaskListItem extends StatelessWidget {
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
-                var userProvider = Provider.of<UserProvider>(context,listen:true);
+                var userProvider = Provider.of<UserProvider>(context,listen:false);
                 FirebaseUtils.deleteTaskFromFireStore(
                   task,userProvider.currentUser!.id
                 ).then((value){
@@ -69,7 +69,7 @@ class TaskListItem extends StatelessWidget {
                         task.title,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: task.isDone
-                                  ? Colors.green
+                                  ? appcolor.greencolor
                                   : appcolor.primarycolor,
                               decoration: task.isDone
                                   ? TextDecoration.lineThrough
@@ -80,7 +80,7 @@ class TaskListItem extends StatelessWidget {
                         task.description,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: task.isDone
-                                  ? Colors.green
+                                  ? appcolor.greencolor
                                   : appcolor.primarycolor,
                               decoration: task.isDone
                                   ? TextDecoration.lineThrough
@@ -102,11 +102,11 @@ class TaskListItem extends StatelessWidget {
                       ? const Text(
                           "is done",
                           style: TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.bold),
+                              color:appcolor.greencolor, fontWeight: FontWeight.bold),
                         )
                       : IconButton(
                           onPressed: () {
-                           // _markTaskAsDone(task, listProvider);
+                            _markTaskAsDone(context,task, listProvider);
                           },
                           icon: const Icon(Icons.check, size: 35),
                           color: appcolor.whitecolor,
@@ -150,18 +150,18 @@ class TaskListItem extends StatelessWidget {
                     updatedTitle = value;
                   },
                   controller: TextEditingController(text: task.title),
-                  style: const TextStyle(color: Colors.black, fontSize: 12),
-                  cursorColor: Colors.blue,
+                  style: const TextStyle(color:  appcolor.blackcolor, fontSize: 12),
+                  cursorColor: appcolor.primarycolor,
                   decoration: const InputDecoration(
                     labelText: "Enter Task Title",
                     filled: true,
                     fillColor: Colors.transparent,
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color: appcolor.primarycolor),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color:  appcolor.primarycolor),
                     ),
                   ),
                 ),
@@ -171,18 +171,18 @@ class TaskListItem extends StatelessWidget {
                     updatedDescription = value;
                   },
                   controller: TextEditingController(text: task.description),
-                  style: const TextStyle(color: Colors.black, fontSize: 12),
-                  cursorColor: Colors.blue,
+                  style: const TextStyle(color: appcolor.blackcolor, fontSize: 12),
+                  cursorColor:  appcolor.primarycolor,
                   decoration: const InputDecoration(
                     labelText: "Enter Task Description",
                     filled: true,
                     fillColor: Colors.transparent,
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color:  appcolor.primarycolor),
                     ),
                     focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue),
+                      borderSide: BorderSide(color:  appcolor.primarycolor),
                     ),
                   ),
                   maxLines: 3,
@@ -205,7 +205,7 @@ class TaskListItem extends StatelessWidget {
                       onPressed: () {
                         task.title = updatedTitle;
                         task.description = updatedDescription;
-                        var userProvider = Provider.of<UserProvider>(context,listen:true);
+                        var userProvider = Provider.of<UserProvider>(context,listen:false);
                         FirebaseUtils.updateTaskInFirebase(task,userProvider.currentUser!.id);
                         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
                         Navigator.of(context).pop();
@@ -225,10 +225,11 @@ class TaskListItem extends StatelessWidget {
     );
      
   }
-/*void _markTaskAsDone(Task task, ListProvider listProvider) {
+void _markTaskAsDone(BuildContext context,Task task, ListProvider listProvider) {
     task.isDone = true;
-    FirebaseUtils.updateTaskInFirebase(task,UserProvider.currentUser!.id);
-    listProvider.getAllTasksFromFireStore(UserProvider.currentUser!.id);
-  }*/
+     var userProvider = Provider.of<UserProvider>(context, listen: false);
+    FirebaseUtils.updateTaskInFirebase(task,userProvider.currentUser!.id);
+    listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
+  }
  
 }

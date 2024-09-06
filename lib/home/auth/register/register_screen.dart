@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoappp/dialog_utils.dart';
-import 'package:todoappp/firebase_utils.dart';
-import 'package:todoappp/home/auth/custom_text_form_field.dart';
+import '/dialog_utils.dart';
+import '/firebase_utils.dart';
+import '/home/auth/custom_text_form_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:todoappp/home/home_screen.dart';
-import 'package:todoappp/model/my_user.dart';
-import 'package:todoappp/providers/user_provider.dart';
+import '/home/home_screen.dart';
+import '/model/my_user.dart';
+import '/providers/user_provider.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -48,12 +48,12 @@ class RegisterScreen extends StatelessWidget {
                           if (text == null || text.trim().isEmpty) {
                             return "Please Enter Email";
                           }
-                          final bool emailValid = RegExp(
-                                  r"[a-zA-Z0-9.a-zA-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z]+")
-                              .hasMatch(text);
-                          if (!emailValid) {
-                            return 'Please enter a valid Email';
-                          }
+                           final bool emailValid = RegExp(
+                                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(text);
+                           if (!emailValid) {
+                             return 'Please enter a valid Email';
+                           }
                           return null;
                         },
                         keyboardType: TextInputType.emailAddress,
@@ -110,12 +110,12 @@ class RegisterScreen extends StatelessWidget {
 
   void register(BuildContext context) async {
     if (formKey.currentState?.validate() == true) {
-      DialogUtils.showLoading(
-          context: (context),
-          loadingLabel: 'loading...',
-          barrierDismissible: false);
-
+      Navigator.of(context).pushNamed(HomeScreen.routeName);
       try {
+        DialogUtils.showLoading(
+    context: (context),
+    loadingLabel: 'loading...',
+    barrierDismissible: false);
         final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,

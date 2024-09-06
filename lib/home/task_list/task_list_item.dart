@@ -26,7 +26,7 @@ class TaskListItem extends StatelessWidget {
             SlidableAction(
               borderRadius: BorderRadius.circular(15),
               onPressed: (context) {
-                var userProvider = Provider.of<UserProvider>(context,listen:false);
+                var userProvider = Provider.of<UserProvider>(context,listen:true);
                 FirebaseUtils.deleteTaskFromFireStore(
                   task,userProvider.currentUser!.id
                 ).then((value){
@@ -44,27 +44,6 @@ class TaskListItem extends StatelessWidget {
             ),
           ],
         ),
-
-        /*Slidable(
-        startActionPane: ActionPane(
-          extentRatio: 0.25,
-          motion: const DrawerMotion(),
-          children: [
-            SlidableAction(
-              borderRadius: BorderRadius.circular(15),
-              onPressed: (context) {
-                FirebaseUtils.deleteTaskFromFireStore(task)
-                    .timeout(Duration(seconds: 1), onTimeout: () {
-                  listProvider.getAllTasksFromFireStore();
-                });
-              },
-              backgroundColor: appcolor.redcolor,
-              foregroundColor: appcolor.whitecolor,
-              icon: Icons.delete,
-              label: 'Delete',
-            ),
-          ],
-        ),*/
         child: GestureDetector(
           onTap: () => _showEditTaskDialog(context, task, listProvider),
           child: Container(
@@ -224,11 +203,11 @@ class TaskListItem extends StatelessWidget {
                     const SizedBox(width: 8),
                     TextButton(
                       onPressed: () {
-                        //var userProvider = Provider.of<UserProvider>(context,listen:false);
                         task.title = updatedTitle;
                         task.description = updatedDescription;
-                        //FirebaseUtils.updateTaskInFirebase(task,UserProvider.currentUser!.id);
-                        //listProvider.getAllTasksFromFireStore(UserProvider.currentUser!.id);
+                        var userProvider = Provider.of<UserProvider>(context,listen:true);
+                        FirebaseUtils.updateTaskInFirebase(task,userProvider.currentUser!.id);
+                        listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
                         Navigator.of(context).pop();
                       },
                       child: const Text(
@@ -253,101 +232,3 @@ class TaskListItem extends StatelessWidget {
   }*/
  
 }
-
-/*import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:provider/provider.dart';
-import 'package:todoappp/appcolor.dart';
-import 'package:todoappp/firebase_utils.dart';
-import 'package:todoappp/model/task.dart';
-import 'package:todoappp/providers/list_provider.dart';
-
-// ignore: must_be_immutable
-class TaskListItem extends StatelessWidget {
-  Task task;
-
-  TaskListItem({required this.task});
-
-  @override
-  Widget build(BuildContext context) {
-    var listProvider = Provider.of<ListProvider>(context);
-    return Container(
-      margin: EdgeInsets.all(12),
-      child: Slidable(
-        startActionPane: ActionPane(
-          extentRatio: 0.25,
-          motion: const DrawerMotion(),
-          children: [
-            SlidableAction(
-              borderRadius: BorderRadius.circular(15),
-              onPressed: (context) {
-                FirebaseUtils.addTaskToFirebase(task)
-                    .timeout(Duration(seconds: 1), onTimeout: () {
-                  print('Task is succesfully deleted');
-                  listProvider.getAllTasksFromFireStore();
-                });
-              },
-              backgroundColor: appcolor.redcolor,
-              foregroundColor: appcolor.whitecolor,
-              icon: Icons.delete,
-              label: 'Delete',
-            ),
-          ],
-        ),
-        child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: appcolor.whitecolor,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                margin: EdgeInsets.all(15),
-                height: MediaQuery.of(context).size.height * 0.1,
-                width: 4,
-                color: appcolor.primarycolor,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(task.title,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: appcolor.primarycolor)),
-                    Text(task.description,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(color: appcolor.primarycolor)),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: appcolor.primarycolor,
-                ),
-                child: IconButton(
-                  onPressed: () {
-
-                    
-                  },
-                  icon: Icon(Icons.check, size: 35),
-                  color: appcolor.whitecolor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}*/
-
-/*
-*/

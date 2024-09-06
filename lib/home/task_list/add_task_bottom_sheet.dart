@@ -21,7 +21,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -166,12 +165,12 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void addTask() {
-     var listProvider = Provider.of<ListProvider>(context);
+    var listProvider = Provider.of<ListProvider>(context);
     if (formKey.currentState?.validate() == true) {
       var userProvider = Provider.of<UserProvider>(context);
-      /*setState(() {
+      setState(() {
         isAdding = true;
-      });*/
+      });
 
       Task task = Task(
         dateTime: selectDate,
@@ -179,27 +178,25 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         description: description,
       );
 
-      FirebaseUtils.addTaskToFirebase(task,userProvider.currentUser!.id).then((value){
-
+      FirebaseUtils.addTaskToFirebase(task, userProvider.currentUser!.id)
+          .then((value) {
         print("task added successfully");
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pop(context);
-      }).
-      timeout(Duration(seconds:1),
-      onTimeout:(){
+      }).timeout(Duration(seconds: 1), onTimeout: () {
         print("task added successfully");
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pop(context);
       });
 
-      /*(value) {
+      (value) {
         Provider.of<ListProvider>(context, listen: false)
-            .getAllTasksFromFireStore();
+            .getAllTasksFromFireStore(userProvider.currentUser!.id);
         setState(() {
           isAdding = false;
         });
         Navigator.pop(context);
-      });*/
+      };
     }
   }
 

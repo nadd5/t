@@ -1,25 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoappp/appcolor.dart';
-import 'package:todoappp/dialog_utils.dart';
-import 'package:todoappp/firebase_utils.dart';
-import 'package:todoappp/home/auth/custom_text_form_field.dart';
-import 'package:todoappp/home/auth/register/register_screen.dart';
-import 'package:todoappp/home/home_screen.dart';
+import '/appcolor.dart';
+import '/dialog_utils.dart';
+import '/firebase_utils.dart';
+import '/home/auth/custom_text_form_field.dart';
+import '/home/auth/register/register_screen.dart';
+import '/home/home_screen.dart';
 //import 'package:todoappp/model/my_user.dart';
-import 'package:todoappp/providers/user_provider.dart';
+import '/providers/user_provider.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
+  
   static const String routeName = 'Login_screen';
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController();
   TextEditingController passController = TextEditingController();
   var formKey = GlobalKey<FormState>();
   late UserProvider userProvider;
   @override
   Widget build(BuildContext context) {
-    //userProvider = Provider.of(context);
+    userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Login'),
@@ -47,12 +49,12 @@ class LoginScreen extends StatelessWidget {
                           if (text == null || text.trim().isEmpty) {
                             return "Please Enter Email";
                           }
-                          final bool emailValid = RegExp(
-                                  r"[a-zA-Z0-9.a-zA-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z]+")
-                              .hasMatch(text);
-                          if (!emailValid) {
-                            return 'Please enter a valid Email';
-                          }
+                                             final bool emailValid = RegExp(
+                                   r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(text);
+                           if (!emailValid) {
+                             return 'Please enter a valid Email';
+                           }
                           return null;
                         },
                         keyboardType: TextInputType.emailAddress,
@@ -106,27 +108,28 @@ class LoginScreen extends StatelessWidget {
   void login(BuildContext context) async {
     if (formKey.currentState?.validate() == true) {
       try {
-        DialogUtils.showLoading(
+         DialogUtils.showLoading(
             context: context,
             loadingLabel: 'Waiting...',
-            barrierDismissible: false);
+           barrierDismissible: false);
         final credential = await FirebaseAuth.instance
             .signInWithEmailAndPassword(
-                email: emailController.text,
-                password: passController.text);
+                email: emailController.text, password: passController.text);
 
         var user = await FirebaseUtils.readUserFromFireStore(
             credential.user?.uid ?? '');
         if (user == null) {
           return;
         }
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        print(credential.user?.uid ?? "");
+        Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+
         userProvider.updateUser(user);
-        DialogUtils.hideLoading(context);
-        DialogUtils.showMessage(
+         DialogUtils.hideLoading(context);
+         DialogUtils.showMessage(
             context: context,
             contents: "Login Successfully",
-            title: 'Success',
+           title: 'Success',
             posActionName: "ok",
             posAction: () {
               Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
@@ -141,9 +144,10 @@ class LoginScreen extends StatelessWidget {
                   "Supplied auth credential is incorrect,malformed or has expired",
               title: 'Error',
               posActionName: "ok");
-        } /*else if (e.code == 'wrong-password') {
+        } 
+        else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
-        }*/
+        }
       } catch (e) {
         DialogUtils.hideLoading(context);
         DialogUtils.showMessage(

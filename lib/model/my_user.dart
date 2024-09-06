@@ -1,4 +1,3 @@
-
 class MyUser {
   static const String collectionName = 'users';
   String id;

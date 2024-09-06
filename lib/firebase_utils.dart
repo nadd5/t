@@ -22,7 +22,7 @@ class FirebaseUtils {
   static Future<void> deleteTaskFromFireStore(Task task,String uId) {
     return getTasksCollection(uId).doc(task.id).delete();
   }
-
+/// todo" bdl method set htb2a update 
   static Future<void> updateTaskInFirebase(Task task,String uId) async {
     await getTasksCollection(uId).doc(task.id).set(task);
   }
@@ -45,86 +45,3 @@ class FirebaseUtils {
     return snapshot.data();
   }
 }
-
-/*import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todoappp/model/task.dart';
-
-class FirebaseUtils {
-  static CollectionReference<Task> getTasksCollection() {
-    return FirebaseFirestore.instance
-        .collection(Task.collectionName)
-        .withConverter<Task>(
-            fromFirestore: ((snapshot, options) =>
-                Task.fromFireStore(snapshot.data()!)),
-            toFirestore: (task, options) => task.toFirestore());
-  }
-
-  static Future<void> addTaskToFirebase(Task task) {
-    var taskCollection = getTasksCollection();
-    var taskDocRef = taskCollection.doc();
-    task.id = taskDocRef.id;
-    return taskDocRef.set(task);
-  }
-
-  static Future<void>deleteTaskFromFireStore(Task task) {
-    return getTasksCollection().doc(task.id).delete();
-  }
-
-  static updateTaskInFirebase(task) {}
-}*/
-
-/*import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todoappp/model/task.dart';
-
-class FirebaseUtils {
-  static CollectionReference<Task> getTasksCollection() {
-    return FirebaseFirestore.instance
-        .collection(Task.collectionName)
-        .withConverter<Task>(
-            fromFirestore: ((snapshot, options) =>
-                Task.fromFireStore(snapshot.data()!)),
-            toFirestore: (task, options) => task.toFirestore());
-  }
-
-  static Future<void> addTaskToFirebase(Task task) {
-    var taskCollection = getTasksCollection();
-    var taskDocRef = taskCollection.doc();
-    task.id = taskDocRef.id;
-    return taskDocRef.set(task);
-  }
-
-  static updateTaskInFirebase(task) {}
-}
-*/
-
-
-/*import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todoappp/model/task.dart';
-
-class FirebaseUtils {
-  static CollectionReference<Task> getTasksCollection() {
-    return FirebaseFirestore.instance
-        .collection(Task.collectionName)
-        .withConverter<Task>(
-            fromFirestore: ((snapshot, options) =>
-                Task.fromFireStore(snapshot.data()!)),
-            toFirestore: (task, options) => task.toFirestore());
-  }
-
-  static Future<void> addTaskToFirebase(Task task) {
-    var taskCollection = getTasksCollection();
-    var taskDocRef = taskCollection.doc();
-    task.id = taskDocRef.id;
-    return taskDocRef.set(task);
-  }
-
-  static Future<void> deleteTaskFromFireStore(Task task) {
-    return getTasksCollection().doc(task.id).delete();
-  }
-
-  static Future<void> updateTaskInFirebase(Task task) {
-    return getTasksCollection().doc(task.id).set(task);
-  }
-}
-
-*/

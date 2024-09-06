@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoappp/firebase_options.dart';
 import 'package:todoappp/home/auth/login/login_screen.dart';
 import 'package:todoappp/home/auth/register/register_screen.dart';
 import 'package:todoappp/providers/app_config_provider.dart';
@@ -12,14 +14,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
-      options: const FirebaseOptions(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  /*options:const FirebaseOptions(
           apiKey: "AIzaSyASClUGg1MWFSVdVlDltEp9pF6pCBQOJ3E",
           appId: "com.example.app",
           messagingSenderId: "530814202175",
-          projectId: "todoappp-affe3"));
-  //await Firebase.initializeApp();
+          projectId: "todoappp-affe3"));*/
+  await FirebaseFirestore.instance.enableNetwork();
 
   runApp(
     MultiProvider(
@@ -57,53 +60,7 @@ class MyApp extends StatelessWidget {
       themeMode: provider.appMode,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const MyHomePage(title: 'To-Do App'),
       locale: Locale(provider.appLanguage),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              '',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }

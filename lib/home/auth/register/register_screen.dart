@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoappp/appcolor.dart';
 import '/dialog_utils.dart';
 import '/firebase_utils.dart';
 import '/home/auth/custom_text_form_field.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '/home/home_screen.dart';
 import '/model/my_user.dart';
 import '/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -20,7 +22,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Create Account'),
+          title: Text(AppLocalizations.of(context)!.su),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -31,6 +33,18 @@ class RegisterScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      AppLocalizations.of(context)!.su,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: appcolor.primarycolor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                       CustomTextFormField(
                         label: 'User Name',
                         controller: nameController,
@@ -97,9 +111,14 @@ class RegisterScreen extends StatelessWidget {
                               onPressed: () {
                                 register(context);
                               },
+                              style:
+                              ElevatedButton.styleFrom(
+                                backgroundColor:
+                                appcolor.primarycolor,
+                                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),),
                               child: Text(
-                                'Create Account',
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                AppLocalizations.of(context)!.su,
+                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: appcolor.whitecolor),
                               ))),
                     ],
                   )),
@@ -136,7 +155,7 @@ class RegisterScreen extends StatelessWidget {
             context: context,
             contents: 'Register Successfully',
             title: "Success",
-            posActionName: "ok",
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () {
               Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
             });
@@ -148,14 +167,14 @@ class RegisterScreen extends StatelessWidget {
               context: context,
               contents: 'The password provided is too weak',
               title: 'Error',
-              posActionName: "ok");
+              posActionName: AppLocalizations.of(context)!.ok);
         } else if (e.code == 'email-already-in-use') {
           DialogUtils.hideLoading(context);
           DialogUtils.showMessage(
               context: context,
               contents: 'an account already exists for that email',
               title: 'Error',
-              posActionName: "ok");
+              posActionName: AppLocalizations.of(context)!.ok);
         }
       } catch (e) {
         DialogUtils.hideLoading(context);
@@ -163,7 +182,7 @@ class RegisterScreen extends StatelessWidget {
             context: context,
             contents: e.toString(),
             title: 'Error',
-            posActionName: "ok");
+            posActionName: AppLocalizations.of(context)!.ok);
       }
     }
   }

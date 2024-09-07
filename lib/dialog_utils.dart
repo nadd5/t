@@ -1,5 +1,4 @@
 //import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:flutter/material.dart';
 
 class DialogUtils {
@@ -12,12 +11,17 @@ class DialogUtils {
         context: context,
         builder: (context) {
           return AlertDialog(
+            backgroundColor: Theme.of(context).dialogBackgroundColor,
             content: Row(
               children: [
-                CircularProgressIndicator(),
+                CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 SizedBox(width: 8),
-                Text(loadingLabel,
-                    style: Theme.of(context).textTheme.bodyMedium)
+                Text(loadingLabel,style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface),)
               ],
             ),
           );
@@ -44,7 +48,11 @@ class DialogUtils {
             Navigator.pop(context);
             posAction?.call();
           },
-          child: Text(posActionName),
+          child: Text(
+            posActionName,
+            style:
+            Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: Theme.of(context).colorScheme.primary,),)
         ),
       );
     }
@@ -57,18 +65,29 @@ class DialogUtils {
             }*/
             negAction?.call();
           },
-          child: Text(negActionName)));
+          child: Text(
+            negActionName,
+             style:
+             Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: 
+              Theme.of(context).colorScheme.secondary,))));
     }
     showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-              content: Text(
-                contents,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              title: Text(title, style: Theme.of(context).textTheme.bodySmall),
-              actions: actions);
-        });
+            backgroundColor: Theme.of(context).dialogBackgroundColor,
+title: Text(
+            title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          content: Text(
+            contents,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          actions: actions,
+        );
+      },
+    );
   }
 }

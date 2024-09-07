@@ -5,6 +5,8 @@ import 'package:todoappp/appcolor.dart';
 import 'package:todoappp/providers/list_provider.dart';
 import 'package:todoappp/home/task_list/task_list_item.dart';
 import 'package:todoappp/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class TaskListTab extends StatefulWidget {
   @override
@@ -52,7 +54,7 @@ class _TaskListTabState extends State<TaskListTab> {
         SizedBox(height: 1),
         Expanded(
           child: listProvider.tasksList.isEmpty
-              ? Center(child: Text('No Added Tasks'))
+              ? Center(child: Text(AppLocalizations.of(context)!.nat))
               : ListView.builder(
                   itemBuilder: (context, index) {
                     return TaskListItem(

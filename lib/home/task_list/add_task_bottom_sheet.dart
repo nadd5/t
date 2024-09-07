@@ -49,7 +49,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       },
                       validator: (text) {
                         if (text == null || text.isEmpty) {
-                          return "Please Enter Task Title";
+                          return AppLocalizations.of(context)!.entert;
                         }
                         return null;
                       },
@@ -58,8 +58,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         fontSize: 12,
                       ),
                       cursorColor: Colors.blue,
-                      decoration: const InputDecoration(
-                        labelText: "Enter Task Title",
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.entert,
                         filled: true,
                         fillColor: Colors.transparent,
                         labelStyle: TextStyle(
@@ -84,7 +84,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       },
                       validator: (text) {
                         if (text == null || text.isEmpty) {
-                          return "Please Enter Task Description";
+                          return AppLocalizations.of(context)!.enterd;
                         }
                         return null;
                       },
@@ -93,8 +93,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         fontSize: 12,
                       ),
                       cursorColor: Colors.blue,
-                      decoration: const InputDecoration(
-                        labelText: "Enter Task Description",
+                      decoration: InputDecoration(
+                        labelText:AppLocalizations.of(context)!.enterd,
                         filled: true,
                         fillColor: Colors.transparent,
                         labelStyle: TextStyle(
@@ -181,11 +181,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
       FirebaseUtils.addTaskToFirebase(task, userProvider.currentUser!.id)
           .then((value) {
-        print("task added successfully");
+        print(AppLocalizations.of(context)!.tasksucc);
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pop(context);
       }).timeout(Duration(seconds: 1), onTimeout: () {
-        print("task added successfully");
+        print(AppLocalizations.of(context)!.tasksucc);
         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
         Navigator.pop(context);
       });

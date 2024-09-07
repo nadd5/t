@@ -29,7 +29,7 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
               child: provider.appLanguage == 'en'
                   ? getSelectedItemWidget(AppLocalizations.of(context)!.english)
                   : getUnselectedItemWidget(
-                      AppLocalizations.of(context)!.arabic),
+                      AppLocalizations.of(context)!.english),
             ),
           ),
           Padding(
@@ -39,7 +39,7 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
                 provider.changeLanguage('ar');
               },
               child: provider.appLanguage == 'ar'
-                  ? getSelectedItemWidget(AppLocalizations.of(context)!.english)
+                  ? getSelectedItemWidget(AppLocalizations.of(context)!.arabic)
                   : getUnselectedItemWidget(
                       AppLocalizations.of(context)!.arabic),
             ),

@@ -28,7 +28,7 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
                 },
                 child: provider.appMode==ThemeMode.light?
                 getSelectedItemWidget(AppLocalizations.of(context)!.light):
-                getUnselectedItemWidget(AppLocalizations.of(context)!.dark),
+                getUnselectedItemWidget(AppLocalizations.of(context)!.light),
               ),
             ),
             Padding(
@@ -38,7 +38,7 @@ class _ThemeBottomSheetState extends State<ThemeBottomSheet> {
                   provider.changeTheme(ThemeMode.dark);
                 },
                 child: provider.appMode==ThemeMode.dark?
-                getSelectedItemWidget(AppLocalizations.of(context)!.light):
+                getSelectedItemWidget(AppLocalizations.of(context)!.dark):
                 getUnselectedItemWidget(AppLocalizations.of(context)!.dark),
                 /*Icon(
                   Icons.check,

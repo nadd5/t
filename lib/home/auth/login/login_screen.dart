@@ -7,8 +7,9 @@ import '/firebase_utils.dart';
 import '/home/auth/custom_text_form_field.dart';
 import '/home/auth/register/register_screen.dart';
 import '/home/home_screen.dart';
-//import 'package:todoappp/model/my_user.dart';
 import '/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
@@ -24,7 +25,8 @@ class LoginScreen extends StatelessWidget {
     userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: Text(AppLocalizations.of(context)!.login),
+          backgroundColor: appcolor.primarycolor,
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -40,6 +42,11 @@ class LoginScreen extends StatelessWidget {
                         child: Text(
                           'Welcome Back',
                           textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: appcolor.blackcolor,
+                        fontWeight: FontWeight.bold,
+                        ),
                         ),
                       ),
                       CustomTextFormField(
@@ -80,10 +87,20 @@ class LoginScreen extends StatelessWidget {
                               onPressed: () {
                                 login(context);
                               },
+                              style:
+                              ElevatedButton.styleFrom(
+                                backgroundColor:
+                                appcolor.primarycolor,
+                                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),),
                               child: Text(
-                                'Login',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ))),
+                                AppLocalizations.of(context)!.login,
+                                style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: appcolor.whitecolor),
+                              )
+                              )
+                              ),
                       Padding(
                           padding: const EdgeInsets.all(15),
                           child: TextButton(
@@ -91,13 +108,18 @@ class LoginScreen extends StatelessWidget {
                                 Navigator.of(context)
                                     .pushNamed(RegisterScreen.routeName);
                               },
-                              child: Text('create account',
+                              child: Text(AppLocalizations.of(context)!.su,
                                   style: Theme.of(context)
                                       .textTheme
                                       .titleLarge
                                       ?.copyWith(
                                           color: appcolor.primarycolor,
-                                          fontSize: 22)))),
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          )
+                                          )
+                                          )
+                                          ),
                     ],
                   )),
             ],
@@ -130,7 +152,7 @@ class LoginScreen extends StatelessWidget {
             context: context,
             contents: "Login Successfully",
            title: 'Success',
-            posActionName: "ok",
+            posActionName: AppLocalizations.of(context)!.ok,
             posAction: () {
               Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
             });
@@ -143,7 +165,7 @@ class LoginScreen extends StatelessWidget {
               contents:
                   "Supplied auth credential is incorrect,malformed or has expired",
               title: 'Error',
-              posActionName: "ok");
+              posActionName:AppLocalizations.of(context)!.ok);
         } 
         else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
@@ -154,7 +176,7 @@ class LoginScreen extends StatelessWidget {
             context: context,
             contents: e.toString(),
             title: 'Error',
-            posActionName: "ok");
+            posActionName: AppLocalizations.of(context)!.ok);
       }
     }
   }

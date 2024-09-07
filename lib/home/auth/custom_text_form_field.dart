@@ -24,6 +24,10 @@ class CustomTextFormField extends StatelessWidget {
       child: TextFormField(
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(color: appcolor.primarycolor),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
             borderSide: const BorderSide(color: appcolor.primarycolor),
@@ -42,6 +46,11 @@ class CustomTextFormField extends StatelessWidget {
           ),
           errorMaxLines: 2,
         ),
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(color: appcolor.blackcolor),
+            cursorColor: appcolor.primarycolor,
         controller: controller,
         keyboardType: keyboardType,
         obscureText: obscureText,

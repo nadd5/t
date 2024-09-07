@@ -6,6 +6,8 @@ import 'package:todoappp/firebase_utils.dart';
 import 'package:todoappp/model/task.dart';
 import 'package:todoappp/providers/list_provider.dart';
 import 'package:todoappp/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class TaskListItem extends StatelessWidget {
   final Task task;
@@ -30,17 +32,17 @@ class TaskListItem extends StatelessWidget {
                 FirebaseUtils.deleteTaskFromFireStore(
                   task,userProvider.currentUser!.id
                 ).then((value){
-                  print('Task is succesfully deleted');
+                  print(AppLocalizations.of(context)!.del);
                   listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
                 }).timeout(Duration(seconds: 1), onTimeout: () {
-                  print('Task is succesfully deleted');
+                  print(AppLocalizations.of(context)!.del);
                   listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
                 });
               },
               backgroundColor: appcolor.redcolor,
               foregroundColor: appcolor.whitecolor,
               icon: Icons.delete,
-              label: 'Delete',
+              label: AppLocalizations.of(context)!.delete,
             ),
           ],
         ),
@@ -99,8 +101,8 @@ class TaskListItem extends StatelessWidget {
                         : appcolor.primarycolor,
                   ),
                   child: task.isDone
-                      ? const Text(
-                          "is done",
+                      ? Text(
+                          AppLocalizations.of(context)!.is_done,
                           style: TextStyle(
                               color:appcolor.greencolor, fontWeight: FontWeight.bold),
                         )
@@ -140,7 +142,7 @@ class TaskListItem extends StatelessWidget {
               children: [
                 Center(
                   child: Text(
-                    "Edit Task",
+                    AppLocalizations.of(context)!.edit_task,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
@@ -152,8 +154,8 @@ class TaskListItem extends StatelessWidget {
                   controller: TextEditingController(text: task.title),
                   style: const TextStyle(color:  appcolor.blackcolor, fontSize: 12),
                   cursorColor: appcolor.primarycolor,
-                  decoration: const InputDecoration(
-                    labelText: "Enter Task Title",
+                  decoration: InputDecoration(
+                    labelText:AppLocalizations.of(context)!.entert,
                     filled: true,
                     fillColor: Colors.transparent,
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
@@ -173,8 +175,8 @@ class TaskListItem extends StatelessWidget {
                   controller: TextEditingController(text: task.description),
                   style: const TextStyle(color: appcolor.blackcolor, fontSize: 12),
                   cursorColor:  appcolor.primarycolor,
-                  decoration: const InputDecoration(
-                    labelText: "Enter Task Description",
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.enterd,
                     filled: true,
                     fillColor: Colors.transparent,
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 14),
@@ -195,9 +197,9 @@ class TaskListItem extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: appcolor.primarycolor),
+                      child: Text(
+                        AppLocalizations.of(context)!.cancel,
+                        style: const TextStyle(color: appcolor.primarycolor),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -210,8 +212,8 @@ class TaskListItem extends StatelessWidget {
                         listProvider.getAllTasksFromFireStore(userProvider.currentUser!.id);
                         Navigator.of(context).pop();
                       },
-                      child: const Text(
-                        "Save",
+                      child: Text(
+                        AppLocalizations.of(context)!.save,
                         style: TextStyle(color: appcolor.primarycolor),
                       ),
                     ),

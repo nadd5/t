@@ -1,3 +1,3 @@
 # todoappp
 
-A task managment app with localization and theming.
+A task managment Fluttter app built with localization and theming.
